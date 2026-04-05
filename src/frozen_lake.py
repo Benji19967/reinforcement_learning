@@ -1,7 +1,11 @@
+from pathlib import Path
+
 import gymnasium as gym
 import numpy as np
 
 NUM_EPISODES = 15_000
+MODELS_DIR = Path(__file__).parents[1] / "models"
+Q_TABLE_FILENAME = (MODELS_DIR / "q_table_frozen_lake.txt").resolve()
 
 
 def run(render: bool = False, is_training: bool = False):
@@ -15,7 +19,7 @@ def run(render: bool = False, is_training: bool = False):
     if is_training:
         q = np.zeros((64, 4))
     else:
-        with open("q.txt", "r") as f:
+        with open(Q_TABLE_FILENAME, "r") as f:
             q = np.loadtxt(f)
 
     learning_rate = 0.9  # alpha
@@ -59,7 +63,7 @@ def run(render: bool = False, is_training: bool = False):
         env.close()
 
     if is_training:
-        with open("q.txt", "w") as f:
+        with open(Q_TABLE_FILENAME, "w+") as f:
             np.savetxt(f, q)
 
 
